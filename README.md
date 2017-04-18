@@ -1,9 +1,14 @@
-# api documentation for  [webpack-stream (v3.2.0)](https://github.com/shama/webpack-stream)  [![npm package](https://img.shields.io/npm/v/npmdoc-webpack-stream.svg?style=flat-square)](https://www.npmjs.org/package/npmdoc-webpack-stream) [![travis-ci.org build-status](https://api.travis-ci.org/npmdoc/node-npmdoc-webpack-stream.svg)](https://travis-ci.org/npmdoc/node-npmdoc-webpack-stream)
+# npmdoc-webpack-stream
+
+#### api documentation for  [webpack-stream (v3.2.0)](https://github.com/shama/webpack-stream)  [![npm package](https://img.shields.io/npm/v/npmdoc-webpack-stream.svg?style=flat-square)](https://www.npmjs.org/package/npmdoc-webpack-stream) [![travis-ci.org build-status](https://api.travis-ci.org/npmdoc/node-npmdoc-webpack-stream.svg)](https://travis-ci.org/npmdoc/node-npmdoc-webpack-stream)
+
 #### Run webpack as a stream
 
-[![NPM](https://nodei.co/npm/webpack-stream.png?downloads=true)](https://www.npmjs.com/package/webpack-stream)
+[![NPM](https://nodei.co/npm/webpack-stream.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.com/package/webpack-stream)
 
-[![apidoc](https://npmdoc.github.io/node-npmdoc-webpack-stream/build/screenCapture.buildNpmdoc.browser._2Fhome_2Ftravis_2Fbuild_2Fnpmdoc_2Fnode-npmdoc-webpack-stream_2Ftmp_2Fbuild_2Fapidoc.html.png)](https://npmdoc.github.io/node-npmdoc-webpack-stream/build/apidoc.html)
+- [https://npmdoc.github.io/node-npmdoc-webpack-stream/build/apidoc.html](https://npmdoc.github.io/node-npmdoc-webpack-stream/build/apidoc.html)
+
+[![apidoc](https://npmdoc.github.io/node-npmdoc-webpack-stream/build/screenCapture.buildCi.browser.%252Ftmp%252Fbuild%252Fapidoc.html.png)](https://npmdoc.github.io/node-npmdoc-webpack-stream/build/apidoc.html)
 
 ![npmPackageListing](https://npmdoc.github.io/node-npmdoc-webpack-stream/build/screenCapture.npmPackageListing.svg)
 
@@ -18,7 +23,6 @@
 {
     "author": {
         "name": "Kyle Robinson Young",
-        "email": "kyle@dontkry.com",
         "url": "http://dontkry.com"
     },
     "bugs": {
@@ -63,13 +67,11 @@
     "license": "MIT",
     "maintainers": [
         {
-            "name": "shama",
-            "email": "kyle@dontkry.com"
+            "name": "shama"
         }
     ],
     "name": "webpack-stream",
     "optionalDependencies": {},
-    "readme": "ERROR: No README data found!",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/shama/webpack-stream.git"
@@ -86,16 +88,6 @@
     "version": "3.2.0"
 }
 ```
-
-
-
-# <a name="apidoc.tableOfContents"></a>[table of contents](#apidoc.tableOfContents)
-
-#### [module webpack-stream](#apidoc.module.webpack-stream)
-
-
-
-# <a name="apidoc.module.webpack-stream"></a>[module webpack-stream](#apidoc.module.webpack-stream)
 
 
 
