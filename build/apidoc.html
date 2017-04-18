@@ -61,12 +61,263 @@
 
     <li class="apidocModuleLi"><a href="#apidoc.module.webpack-stream">module webpack-stream</a><ol>
 
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.webpack-stream.webpack-stream">
+            function <span class="apidocSignatureSpan"></span>webpack-stream
+            <span class="apidocSignatureSpan">(options, wp, done)</span>
+            </a>
+
+        </li>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.webpack-stream.toString">
+            function <span class="apidocSignatureSpan">webpack-stream.</span>toString
+            <span class="apidocSignatureSpan">()</span>
+            </a>
+
+        </li>
+
+    </ol></li>
+
+    <li class="apidocModuleLi"><a href="#apidoc.module.webpack-stream.toString">module webpack-stream.toString</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.webpack-stream.toString.toString">
+            function <span class="apidocSignatureSpan">webpack-stream.</span>toString
+            <span class="apidocSignatureSpan">()</span>
+            </a>
+
+        </li>
+
     </ol></li>
 
 </ol></div>
 
 <div class="apidocSectionDiv">
 <h1><a href="#apidoc.module.webpack-stream" id="apidoc.module.webpack-stream">module webpack-stream</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.webpack-stream.webpack-stream" id="apidoc.element.webpack-stream.webpack-stream">
+        function <span class="apidocSignatureSpan"></span>webpack-stream
+        <span class="apidocSignatureSpan">(options, wp, done)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">webpack-stream = function (options, wp, done) {
+  options = clone(options) || {};
+  var config = options.config || options;
+  if (typeof done !== &#x27;function&#x27;) {
+    var callingDone = false;
+    done = function (err, stats) {
+      if (err) {
+        // The err is here just to match the API but isnt used
+        return;
+      }
+      stats = stats || {};
+      if (options.quiet || callingDone) {
+        return;
+      }
+
+      // Debounce output a little for when in watch mode
+      if (options.watch) {
+        callingDone = true;
+        setTimeout(function () {
+          callingDone = false;
+        }, 500);
+      }
+
+      if (options.verbose) {
+        gutil.log(stats.toString({
+          colors: gutil.colors.supportsColor
+        }));
+      } else {
+        var statsOptions = options &#x26;&#x26; options.stats || {};
+
+        Object.keys(defaultStatsOptions).forEach(function (key) {
+          if (typeof statsOptions[key] === &#x27;undefined&#x27;) {
+            statsOptions[key] = defaultStatsOptions[key];
+          }
+        });
+
+        gutil.log(stats.toString(statsOptions));
+      }
+    };
+  }
+
+  var webpack = wp || require(&#x27;webpack&#x27;);
+  var entry = [];
+  var entries = Object.create(null);
+
+  var stream = through(function (file) {
+    if (file.isNull()) {
+      return;
+    }
+    if (&#x27;named&#x27; in file) {
+      if (!Array.isArray(entries[file.named])) {
+        entries[file.named] = [];
+      }
+      entries[file.named].push(file.path);
+    } else {
+      entry = entry || [];
+      entry.push(file.path);
+    }
+  }, function () {
+    var self = this;
+    var handleConfig = function (config) {
+      config.output = config.output || {};
+      config.watch = !!options.watch;
+
+      // Determine pipe&#x27;d in entry
+      if (Object.keys(entries).length &#x3e; 0) {
+        entry = entries;
+        if (!config.output.filename) {
+          // Better output default for multiple chunks
+          config.output.filename = &#x27;[name].js&#x27;;
+        }
+      } else if (entry.length &#x3c; 2) {
+        entry = entry[0] || entry;
+      }
+
+      config.entry = config.entry || entry;
+      config.output.path = config.output.path || process.cwd();
+      config.output.filename = config.output.filename || &#x27;[hash].js&#x27;;
+      config.watch = options.watch;
+      entry = [];
+
+      if (!config.entry || config.entry.length &#x3c; 1) {
+        gutil.log(&#x27;webpack-stream - No files given; aborting compilation&#x27;);
+        self.emit(&#x27;end&#x27;);
+        return false;
+      }
+      return true;
+    };
+
+    var succeeded;
+    if (Array.isArray(config)) {
+      for (var i = 0; i &#x3c; config.length; i++) {
+        succeeded = handleConfig(config[i]);
+        if (!succeeded) {
+          return false;
+        }
+      }
+    } else {
+      succeeded = handleConfig(config);
+      if (!succeeded) {
+        return false;
+      }
+    }
+
+    var compiler = webpack(config, function (err, stats) {
+      if (err) {
+        self.emit(&#x27;error&#x27;, new gutil.PluginError(&#x27;webpack-stream&#x27;, err));
+      }
+      var jsonStats = stats.toJson() || {};
+      var errors = jsonStats.errors || [];
+      if (errors.length) {
+        var errorMessage = errors.reduce(function (resultMessage, nextError) {
+          resultMessage += nextError.toString();
+          return resultMessage;
+        }, &#x27;&#x27;);
+        self.emit(&#x27;error&#x27;, new gutil.PluginError(&#x27;webpack-stream&#x27;, errorMessage));
+      }
+      if (!options.watch) {
+        self.queue(null);
+      }
+      done(err, stats);
+      if (options.watch &#x26;&#x26; !options.quiet) {
+        gutil.log(&#x27;webpack is watching for changes&#x27;);
+      }
+    });
+
+    var handleCompiler = function (compiler) {
+      // In watch mode webpack returns a wrapper object so we need to get
+      // the underlying compiler
+      if (options.watch &#x26;&#x26; compiler.compiler) {
+        compiler = compiler.compiler;
+      }
+
+      if (options.progress) {
+        compiler.apply(new ProgressPlugin(function (percentage, msg) {
+          percentage = Math.floor(percentage * 100);
+          msg = percentage + &#x27;% &#x27; + msg;
+          if (percentage &#x3c; 10) msg = &#x27; &#x27; + msg;
+          gutil.log(&#x27;webpack&#x27;, msg);
+        }));
+      }
+
+      var fs = compiler.outp ...</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+
+    <h2>
+        <a href="#apidoc.element.webpack-stream.toString" id="apidoc.element.webpack-stream.toString">
+        function <span class="apidocSignatureSpan">webpack-stream.</span>toString
+        <span class="apidocSignatureSpan">()</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">toString = function () {
+    return text;
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">...
+callingDone = true;
+setTimeout(function () {
+  callingDone = false;
+}, 500);
+      }
+
+      if (options.verbose) {
+gutil.log(stats.<span class="apidocCodeKeywordSpan">toString</span>({
+  colors: gutil.colors.supportsColor
+}));
+      } else {
+var statsOptions = options &#x26;&#x26; options.stats || {};
+
+Object.keys(defaultStatsOptions).forEach(function (key) {
+  if (typeof statsOptions[key] === &#x27;undefined&#x27;) {
+...</pre></li>
+    </ul>
+
+
+</div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.webpack-stream.toString" id="apidoc.module.webpack-stream.toString">module webpack-stream.toString</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.webpack-stream.toString.toString" id="apidoc.element.webpack-stream.toString.toString">
+        function <span class="apidocSignatureSpan">webpack-stream.</span>toString
+        <span class="apidocSignatureSpan">()</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function toString() { [native code] }</pre></li>
+    <li>example usage<pre class="apidocCodePre">...
+callingDone = true;
+setTimeout(function () {
+  callingDone = false;
+}, 500);
+      }
+
+      if (options.verbose) {
+gutil.log(stats.<span class="apidocCodeKeywordSpan">toString</span>({
+  colors: gutil.colors.supportsColor
+}));
+      } else {
+var statsOptions = options &#x26;&#x26; options.stats || {};
+
+Object.keys(defaultStatsOptions).forEach(function (key) {
+  if (typeof statsOptions[key] === &#x27;undefined&#x27;) {
+...</pre></li>
+    </ul>
+
 
 </div>
 

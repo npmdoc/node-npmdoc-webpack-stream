@@ -1,4 +1,4 @@
-<div class="apidocDiv">
+<html><head></head><body><div class="apidocDiv">
 <style>
 /*csslint
 */
@@ -47,17 +47,10 @@
 }
 </style>
 <h1>api documentation for
-    <a
-
-        href="https://github.com/shama/webpack-stream"
-
-    >webpack-stream (v3.2.0)</a>
+    <a href="https://github.com/shama/webpack-stream">webpack-stream (v3.2.0)</a>
 </h1>
 <h4>Run webpack as a stream</h4>
-<div class="apidocSectionDiv"><a
-    href="#apidoc.tableOfContents"
-    id="apidoc.tableOfContents"
-><h1>table of contents</h1></a><ol>
+<div class="apidocSectionDiv"><a href="#apidoc.tableOfContents" id="apidoc.tableOfContents"><h1>table of contents</h1></a><ol>
 
     <li class="apidocModuleLi"><a href="#apidoc.module.webpack-stream">module webpack-stream</a><ol>
 
@@ -110,7 +103,7 @@
     <li>description and source-code<pre class="apidocCodePre">webpack-stream = function (options, wp, done) {
   options = clone(options) || {};
   var config = options.config || options;
-  if (typeof done !== &#x27;function&#x27;) {
+  if (typeof done !== 'function') {
     var callingDone = false;
     done = function (err, stats) {
       if (err) {
@@ -135,10 +128,10 @@
           colors: gutil.colors.supportsColor
         }));
       } else {
-        var statsOptions = options &#x26;&#x26; options.stats || {};
+        var statsOptions = options &amp;&amp; options.stats || {};
 
         Object.keys(defaultStatsOptions).forEach(function (key) {
-          if (typeof statsOptions[key] === &#x27;undefined&#x27;) {
+          if (typeof statsOptions[key] === 'undefined') {
             statsOptions[key] = defaultStatsOptions[key];
           }
         });
@@ -148,7 +141,7 @@
     };
   }
 
-  var webpack = wp || require(&#x27;webpack&#x27;);
+  var webpack = wp || require('webpack');
   var entry = [];
   var entries = Object.create(null);
 
@@ -156,7 +149,7 @@
     if (file.isNull()) {
       return;
     }
-    if (&#x27;named&#x27; in file) {
+    if ('named' in file) {
       if (!Array.isArray(entries[file.named])) {
         entries[file.named] = [];
       }
@@ -171,26 +164,26 @@
       config.output = config.output || {};
       config.watch = !!options.watch;
 
-      // Determine pipe&#x27;d in entry
-      if (Object.keys(entries).length &#x3e; 0) {
+      // Determine pipe'd in entry
+      if (Object.keys(entries).length &gt; 0) {
         entry = entries;
         if (!config.output.filename) {
           // Better output default for multiple chunks
-          config.output.filename = &#x27;[name].js&#x27;;
+          config.output.filename = '[name].js';
         }
-      } else if (entry.length &#x3c; 2) {
+      } else if (entry.length &lt; 2) {
         entry = entry[0] || entry;
       }
 
       config.entry = config.entry || entry;
       config.output.path = config.output.path || process.cwd();
-      config.output.filename = config.output.filename || &#x27;[hash].js&#x27;;
+      config.output.filename = config.output.filename || '[hash].js';
       config.watch = options.watch;
       entry = [];
 
-      if (!config.entry || config.entry.length &#x3c; 1) {
-        gutil.log(&#x27;webpack-stream - No files given; aborting compilation&#x27;);
-        self.emit(&#x27;end&#x27;);
+      if (!config.entry || config.entry.length &lt; 1) {
+        gutil.log('webpack-stream - No files given; aborting compilation');
+        self.emit('end');
         return false;
       }
       return true;
@@ -198,7 +191,7 @@
 
     var succeeded;
     if (Array.isArray(config)) {
-      for (var i = 0; i &#x3c; config.length; i++) {
+      for (var i = 0; i &lt; config.length; i++) {
         succeeded = handleConfig(config[i]);
         if (!succeeded) {
           return false;
@@ -213,7 +206,7 @@
 
     var compiler = webpack(config, function (err, stats) {
       if (err) {
-        self.emit(&#x27;error&#x27;, new gutil.PluginError(&#x27;webpack-stream&#x27;, err));
+        self.emit('error', new gutil.PluginError('webpack-stream', err));
       }
       var jsonStats = stats.toJson() || {};
       var errors = jsonStats.errors || [];
@@ -221,31 +214,31 @@
         var errorMessage = errors.reduce(function (resultMessage, nextError) {
           resultMessage += nextError.toString();
           return resultMessage;
-        }, &#x27;&#x27;);
-        self.emit(&#x27;error&#x27;, new gutil.PluginError(&#x27;webpack-stream&#x27;, errorMessage));
+        }, '');
+        self.emit('error', new gutil.PluginError('webpack-stream', errorMessage));
       }
       if (!options.watch) {
         self.queue(null);
       }
       done(err, stats);
-      if (options.watch &#x26;&#x26; !options.quiet) {
-        gutil.log(&#x27;webpack is watching for changes&#x27;);
+      if (options.watch &amp;&amp; !options.quiet) {
+        gutil.log('webpack is watching for changes');
       }
     });
 
     var handleCompiler = function (compiler) {
       // In watch mode webpack returns a wrapper object so we need to get
       // the underlying compiler
-      if (options.watch &#x26;&#x26; compiler.compiler) {
+      if (options.watch &amp;&amp; compiler.compiler) {
         compiler = compiler.compiler;
       }
 
       if (options.progress) {
         compiler.apply(new ProgressPlugin(function (percentage, msg) {
           percentage = Math.floor(percentage * 100);
-          msg = percentage + &#x27;% &#x27; + msg;
-          if (percentage &#x3c; 10) msg = &#x27; &#x27; + msg;
-          gutil.log(&#x27;webpack&#x27;, msg);
+          msg = percentage + '% ' + msg;
+          if (percentage &lt; 10) msg = ' ' + msg;
+          gutil.log('webpack', msg);
         }));
       }
 
@@ -277,10 +270,10 @@ gutil.log(stats.<span class="apidocCodeKeywordSpan">toString</span>({
   colors: gutil.colors.supportsColor
 }));
       } else {
-var statsOptions = options &#x26;&#x26; options.stats || {};
+var statsOptions = options &amp;&amp; options.stats || {};
 
 Object.keys(defaultStatsOptions).forEach(function (key) {
-  if (typeof statsOptions[key] === &#x27;undefined&#x27;) {
+  if (typeof statsOptions[key] === 'undefined') {
 ...</pre></li>
     </ul>
 
@@ -311,10 +304,10 @@ gutil.log(stats.<span class="apidocCodeKeywordSpan">toString</span>({
   colors: gutil.colors.supportsColor
 }));
       } else {
-var statsOptions = options &#x26;&#x26; options.stats || {};
+var statsOptions = options &amp;&amp; options.stats || {};
 
 Object.keys(defaultStatsOptions).forEach(function (key) {
-  if (typeof statsOptions[key] === &#x27;undefined&#x27;) {
+  if (typeof statsOptions[key] === 'undefined') {
 ...</pre></li>
     </ul>
 
@@ -327,3 +320,4 @@ Object.keys(defaultStatsOptions).forEach(function (key) {
     ]
 </div>
 </div>
+</body></html>
