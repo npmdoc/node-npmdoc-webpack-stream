@@ -1,6 +1,6 @@
 # npmdoc-webpack-stream
 
-#### api documentation for  [webpack-stream (v3.2.0)](https://github.com/shama/webpack-stream)  [![npm package](https://img.shields.io/npm/v/npmdoc-webpack-stream.svg?style=flat-square)](https://www.npmjs.org/package/npmdoc-webpack-stream) [![travis-ci.org build-status](https://api.travis-ci.org/npmdoc/node-npmdoc-webpack-stream.svg)](https://travis-ci.org/npmdoc/node-npmdoc-webpack-stream)
+#### basic api documentation for  [webpack-stream (v3.2.0)](https://github.com/shama/webpack-stream)  [![npm package](https://img.shields.io/npm/v/npmdoc-webpack-stream.svg?style=flat-square)](https://www.npmjs.org/package/npmdoc-webpack-stream) [![travis-ci.org build-status](https://api.travis-ci.org/npmdoc/node-npmdoc-webpack-stream.svg)](https://travis-ci.org/npmdoc/node-npmdoc-webpack-stream)
 
 #### Run webpack as a stream
 
@@ -85,7 +85,8 @@
             "examples"
         ]
     },
-    "version": "3.2.0"
+    "version": "3.2.0",
+    "bin": {}
 }
 ```
 
